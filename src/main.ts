@@ -1,69 +1,86 @@
 import './style.css';
-import { createGameField, setLetter, showMessage, flipTiles } from './functions';
+import { WordService, createGameField, setLetter, showMessage, flipTiles, YandexWordService } from './functions';
 
-const tileContainer = document.querySelector('.tile-container');
-const messageContainer = document.querySelector('.message-container');
+/**
+ * Game start
+ *
+ * @param length Secret word length
+ * @param attempts Number of attempts
+ * @param wordService Word provider
+ */
+const start = ({length, attempts, wordService}: {
+  length: number,
+  attempts: number,
+  wordService: WordService
+}) => {
+  const tileContainer = document.querySelector('.tile-container');
+  const messageContainer = document.querySelector('.message-container');
+  const wordle: string = wordService.getWord(5).toUpperCase();
+  const gameMatrix = [
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+    ['', '', '', '', ''],
+  ];
 
-let wordle: string = 'SUPER';
+  let currentRow: number = 0;
+  let currentCol: number = 0;
+  let isGameOver: boolean = false;
 
-const gameMatrix = [
-  ['', '', '', '', ''],
-  ['', '', '', '', ''],
-  ['', '', '', '', ''],
-  ['', '', '', '', ''],
-  ['', '', '', '', ''],
-  ['', '', '', '', ''],
-];
+  createGameField(gameMatrix, tileContainer);
 
-let currentRow: number = 0;
-let currentCol: number = 0;
-let isGameOver: boolean = false;
+  window.addEventListener('keydown', (e) => handleClick(e.key.toUpperCase()))
 
-createGameField(gameMatrix, tileContainer);
+  const handleClick = async (key: string) => {
+    console.log(key)
 
-window.addEventListener('keydown', (e) => handleClick(e.key.toUpperCase()))
+    switch (key) {
+      case 'BACKSPACE':
+        if (currentCol === 0) {
+          return;
+        }
 
-const handleClick = async (key: string) => {
-  console.log(key)
+        currentCol--;
 
-  switch (key) {
-    case 'BACKSPACE':
-      if (currentCol === 0) {
-        return;
-      }
+        setLetter(gameMatrix, currentRow, currentCol, '');
+        break;
 
-      currentCol--;
+      case 'ENTER':
+        if (currentCol <= 4) {
+          return;
+        }
 
-      setLetter(gameMatrix, currentRow, currentCol, '');
-      break;
+        await flipTiles(currentRow, wordle);
 
-    case 'ENTER':
-      if (currentCol <= 4) {
-        return;
-      }
+        if (gameMatrix[currentRow].join('') === wordle) {
+          showMessage(messageContainer, 'Magnificent!');
+          isGameOver = true;
+        } else if (currentRow >= 5) {
+          showMessage(messageContainer, 'Game Over');
+          isGameOver = true;
+        } else {
+          currentRow++;
+          currentCol = 0;
+        }
+        break;
 
-      await flipTiles(currentRow, wordle);
+      default:
+        if (currentRow > 5 && currentCol >= 4) {
+          return;
+        }
 
-      if (gameMatrix[currentRow].join('') === wordle) {
-        showMessage(messageContainer, 'Magnificent!');
-        isGameOver = true;
-      } else if (currentRow >= 5) {
-        showMessage(messageContainer, 'Game Over');
-        isGameOver = true;
-      } else {
-        currentRow++;
-        currentCol = 0;
-      }
-      break;
+        setLetter(gameMatrix, currentRow, currentCol, key);
 
-    default:
-      if (currentRow > 5 && currentCol >= 4) {
-        return;
-      }
+        currentCol++;
+        break;
+    }
+  };
+}
 
-      setLetter(gameMatrix, currentRow, currentCol, key);
-
-      currentCol++;
-      break;
-  }
-};
+start({
+  length: 5,
+  attempts: 5,
+  wordService: YandexWordService,
+});

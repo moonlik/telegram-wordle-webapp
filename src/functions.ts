@@ -1,3 +1,18 @@
+export interface WordService {
+  getWord: (length: number) => string;
+  checkWord: (word: string) => boolean;
+}
+
+export const YandexWordService: WordService = {
+  getWord: function (length: number): string {
+    return 'super';
+  },
+
+  checkWord: function (word: string): boolean {
+    return true;
+  }
+}
+
 export const createGameField = (
   rows: Array<Array<string>>,
   tileContainer: Element | null
