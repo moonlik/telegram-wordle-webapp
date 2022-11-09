@@ -36,8 +36,8 @@ const start = ({length, attempts, wordService}: {
   const handleClick = async (key: string) => {
     console.log(key)
 
-    switch (key) {
-      case 'BACKSPACE':
+    switch (true) {
+      case key === 'BACKSPACE':
         if (currentCol === 0) {
           return;
         }
@@ -47,7 +47,7 @@ const start = ({length, attempts, wordService}: {
         setLetter(gameMatrix, currentRow, currentCol, '');
         break;
 
-      case 'ENTER':
+      case key === 'ENTER':
         if (currentCol <= 4) {
           return;
         }
@@ -66,11 +66,10 @@ const start = ({length, attempts, wordService}: {
         }
         break;
 
-      default:
+      case (/^\w{1}$/gi).test(key):
         if (currentRow > 5 && currentCol >= 4) {
           return;
         }
-
         setLetter(gameMatrix, currentRow, currentCol, key);
 
         currentCol++;
