@@ -15,15 +15,8 @@ const start = ({length, attempts, wordService}: {
 }) => {
   const tileContainer = document.querySelector('.tile-container');
   const messageContainer = document.querySelector('.message-container');
-  const wordle: string = wordService.getWord(5).toUpperCase();
-  const gameMatrix = [
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-  ];
+  const wordle: string = wordService.getWord(length).toUpperCase();
+  const gameMatrix: Array<Array<string>> = Array.from(Array(attempts), () => new Array(length).fill(''));
 
   let currentRow: number = 0;
   let currentCol: number = 0;
@@ -57,7 +50,7 @@ const start = ({length, attempts, wordService}: {
         if (gameMatrix[currentRow].join('') === wordle) {
           showMessage(messageContainer, 'Magnificent!');
           isGameOver = true;
-        } else if (currentRow >= 5) {
+        } else if (currentRow >= attempts) {
           showMessage(messageContainer, 'Game Over');
           isGameOver = true;
         } else {
@@ -67,7 +60,7 @@ const start = ({length, attempts, wordService}: {
         break;
 
       case (/^\w{1}$/gi).test(key):
-        if (currentRow > 5 && currentCol >= 4) {
+        if (currentRow > attempts && currentCol >= length-1) {
           return;
         }
         setLetter(gameMatrix, currentRow, currentCol, key);
