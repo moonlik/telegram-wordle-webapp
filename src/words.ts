@@ -1,4 +1,4 @@
-export const wordsArray: Array<string> = [
+export const rusWordsArray: Array<string> = [
   'человек',
   'год',
   'время',

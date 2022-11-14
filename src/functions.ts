@@ -1,4 +1,4 @@
-import { wordsArray } from "./words";
+import { rusWordsArray } from "./words";
 export interface WordService {
   getWord: (length: number) => string;
   checkWord: (word: string) => boolean;
@@ -14,14 +14,14 @@ export const YandexWordService: WordService = {
   }
 }
 
-export const MockupWordService: WordService = {
+export const RusWordArrayService: WordService = {
   getWord: function (length: number): string {
-    let filteredArray = wordsArray.filter(word => word.length === length);
+    let filteredArray = rusWordsArray.filter(word => word.length === length);
     return filteredArray[Math.floor(Math.random() * filteredArray.length)];
   },
 
   checkWord: function (word: string): boolean {
-    return wordsArray.includes(word);
+    return rusWordsArray.includes(word);
   }
 }
 

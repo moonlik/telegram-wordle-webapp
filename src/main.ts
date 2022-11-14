@@ -1,5 +1,5 @@
 import './style.css';
-import { WordService, createGameField, setLetter, showMessage, flipTiles, MockupWordService } from './functions';
+import { WordService, createGameField, setLetter, showMessage, flipTiles, RusWordArrayService } from './functions';
 
 /**
  * Game start
@@ -47,12 +47,12 @@ const start = ({length, attempts, wordService}: {
           return;
         }
 
-        await flipTiles(currentRow, wordle);
-
-        if(MockupWordService.checkWord(gameMatrix[currentRow].join('').toLowerCase()) === false) {
-          showMessage(messageContainer, 'Word is not in the list');
+        if(RusWordArrayService.checkWord(gameMatrix[currentRow].join('').toLowerCase()) === false) {
+          showMessage(messageContainer, 'Word not in the list. Input exsiting word');
           return;
         }
+
+        await flipTiles(currentRow, wordle);
 
         if (gameMatrix[currentRow].join('') === wordle) {
           showMessage(messageContainer, 'Magnificent!');
@@ -66,7 +66,7 @@ const start = ({length, attempts, wordService}: {
         }
         break;
 
-      case (/^\p{L}$/gu).test(key):
+      case (/^[а-я]$/gi).test(key):
         if (currentRow > attempts && currentCol >= length-1) {
           return;
         }
@@ -81,5 +81,5 @@ const start = ({length, attempts, wordService}: {
 start({
   length: 5,
   attempts: 5,
-  wordService: MockupWordService,
+  wordService: RusWordArrayService,
 });
