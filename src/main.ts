@@ -66,7 +66,7 @@ const start = ({length, attempts, wordService}: {
         }
         break;
 
-      case (/^\p{L}$/giu).test(key):
+      case (/^\p{L}$/gu).test(key):
         if (currentRow > attempts && currentCol >= length-1) {
           return;
         }
