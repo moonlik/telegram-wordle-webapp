@@ -16,7 +16,7 @@ const start = ({length, attempts, wordService}: {
   const tileContainer = document.querySelector('.tile-container');
   const messageContainer = document.querySelector('.message-container');
   const wordle: string = wordService.getWord(length).toUpperCase();
-  const gameMatrix: Array<Array<string>> = Array.from(Array(attempts), () => new Array(length).fill(''));
+  const gameMatrix: string[][] = Array.from(Array(attempts), () => new Array(length).fill(''));
 
   let currentRow: number = 0;
   let currentCol: number = 0;
@@ -32,7 +32,18 @@ const start = ({length, attempts, wordService}: {
     console.log(key)
 
     switch (true) {
-      case key === 'BACKSPACE':
+      case (/^[а-я]$/gi).test(key): {
+        if (currentRow > attempts && currentCol >= length-1) {
+          return;
+        }
+
+        setLetter(gameMatrix, currentRow, currentCol, key);
+
+        currentCol++;
+        break;
+      }
+
+      case key === 'BACKSPACE': {
         if (currentCol === 0) {
           return;
         }
@@ -41,13 +52,14 @@ const start = ({length, attempts, wordService}: {
 
         setLetter(gameMatrix, currentRow, currentCol, '');
         break;
+      }
 
-      case key === 'ENTER':
+      case key === 'ENTER': {
         if (currentCol <= 4) {
           return;
         }
 
-        if(RusWordArrayService.checkWord(gameMatrix[currentRow].join('').toLowerCase()) === false) {
+        if (RusWordArrayService.checkWord(gameMatrix[currentRow].join('').toLowerCase()) === false) {
           showMessage(messageContainer, 'Word not in the list. Input exsiting word');
           return;
         }
@@ -65,18 +77,10 @@ const start = ({length, attempts, wordService}: {
           currentCol = 0;
         }
         break;
-
-      case (/^[а-я]$/gi).test(key):
-        if (currentRow > attempts && currentCol >= length-1) {
-          return;
-        }
-        setLetter(gameMatrix, currentRow, currentCol, key);
-
-        currentCol++;
-        break;
+      }
     }
-  };
-}
+  }
+};
 
 start({
   length: 5,

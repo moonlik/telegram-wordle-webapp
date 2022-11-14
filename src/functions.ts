@@ -26,7 +26,7 @@ export const RusWordArrayService: WordService = {
 }
 
 export const createGameField = (
-  rows: Array<Array<string>>,
+  rows: string[][],
   tileContainer: Element | null
 ): void => {
   rows.forEach((row, rowIndex) => {
@@ -47,7 +47,7 @@ export const createGameField = (
   });
 }
 
-export const setLetter = (gameMatrix: Array<Array<string>>, row: number, col: number, letter: string) => {
+export const setLetter = (gameMatrix: string[][], row: number, col: number, letter: string) => {
   const tile = document.getElementById(
     `row-${row}-col-${col}`
   );
