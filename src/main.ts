@@ -1,5 +1,5 @@
 import './style.css';
-import { WordService, createGameField, setLetter, showMessage, flipTiles, YandexWordService } from './functions';
+import { WordService, createGameField, setLetter, showMessage, flipTiles, MockupWordService } from './functions';
 
 /**
  * Game start
@@ -24,6 +24,8 @@ const start = ({length, attempts, wordService}: {
 
   createGameField(gameMatrix, tileContainer);
 
+  console.log(wordle)
+
   window.addEventListener('keydown', (e) => handleClick(e.key.toUpperCase()))
 
   const handleClick = async (key: string) => {
@@ -47,6 +49,11 @@ const start = ({length, attempts, wordService}: {
 
         await flipTiles(currentRow, wordle);
 
+        if(MockupWordService.checkWord(gameMatrix[currentRow].join('').toLowerCase()) === false) {
+          showMessage(messageContainer, 'Word is not in the list');
+          return;
+        }
+
         if (gameMatrix[currentRow].join('') === wordle) {
           showMessage(messageContainer, 'Magnificent!');
           isGameOver = true;
@@ -59,7 +66,7 @@ const start = ({length, attempts, wordService}: {
         }
         break;
 
-      case (/^\w{1}$/gi).test(key):
+      case (/^\p{L}$/giu).test(key):
         if (currentRow > attempts && currentCol >= length-1) {
           return;
         }
@@ -74,5 +81,5 @@ const start = ({length, attempts, wordService}: {
 start({
   length: 5,
   attempts: 5,
-  wordService: YandexWordService,
+  wordService: MockupWordService,
 });

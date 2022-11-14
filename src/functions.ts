@@ -1,3 +1,4 @@
+import { wordsArray } from "./words";
 export interface WordService {
   getWord: (length: number) => string;
   checkWord: (word: string) => boolean;
@@ -10,6 +11,17 @@ export const YandexWordService: WordService = {
 
   checkWord: function (word: string): boolean {
     return true;
+  }
+}
+
+export const MockupWordService: WordService = {
+  getWord: function (length: number): string {
+    let filteredArray = wordsArray.filter(word => word.length === length);
+    return filteredArray[Math.floor(Math.random() * filteredArray.length)];
+  },
+
+  checkWord: function (word: string): boolean {
+    return wordsArray.includes(word);
   }
 }
 
